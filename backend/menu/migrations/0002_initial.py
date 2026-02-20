@@ -1,0 +1,34 @@
+import django.db.models.deletion
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+        ('menu', '0001_initial'),
+        ('restaurants', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name='menucategory',
+            name='restaurant',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='menu_categories', to='restaurants.restaurant'),
+        ),
+        migrations.AddField(
+            model_name='menuitem',
+            name='category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='menu.menucategory'),
+        ),
+        migrations.AddField(
+            model_name='menuitem',
+            name='restaurant',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='menu_items', to='restaurants.restaurant'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='menucategory',
+            unique_together={('restaurant', 'name')},
+        ),
+    ]

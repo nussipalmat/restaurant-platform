@@ -40,6 +40,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: restaurant_backend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: django.backend
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
@@ -57,6 +62,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      fluent-bit:
+        condition: service_started
     networks:
       - restaurant_network
     restart: unless-stopped
@@ -129,11 +136,42 @@ services:
       - restaurant_network
     restart: unless-stopped
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  fluent-bit:
+    image: fluent/fluent-bit:2.2
+    container_name: fluent-bit
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.2
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
 volumes:
   postgres_data:
   static_volume:
   media_volume:
-
+  esdata:
 networks:
   restaurant_network:
     driver: bridge

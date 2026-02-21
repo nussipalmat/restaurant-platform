@@ -96,3 +96,15 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profile of {self.user.email}"
 
+    def save(self, *args, **kwargs):
+        if self.role == 'ADMIN':
+            self.is_staff = True
+            self.is_superuser = True
+        elif self.role in ['STAFF', 'RESTAURANT_OWNER']:
+            self.is_staff = True
+            self.is_superuser = False
+        elif self.role == 'CUSTOMER':
+            self.is_staff = False
+            self.is_superuser = False
+            
+        super().save(*args, **kwargs)

@@ -41,6 +41,12 @@ class Reservation(models.Model):
     class Meta:
         db_table = 'reservations'
         ordering = ['-reservation_date', '-reservation_time']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['table', 'reservation_date', 'reservation_time'],
+                name='unique_table_booking_time'
+            )
+        ]
     
     def __str__(self):
         return f"{self.user.email} - {self.restaurant.name} on {self.reservation_date} at {self.reservation_time}"

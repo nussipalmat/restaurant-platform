@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from orders.models import Order, OrderItem
 from promotions.models import Promotion
+from reservations.models import Reservation
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -13,6 +14,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     promo_code = serializers.CharField(required=False, allow_null=True, write_only=True)
+    reservation = serializers.PrimaryKeyRelatedField(
+        queryset=Reservation.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = Order

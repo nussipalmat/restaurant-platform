@@ -26,6 +26,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import SupportPage from './pages/SupportPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PromotionsPage from './pages/PromotionsPage';
+import OwnerDashboardPage from './pages/OwnerDashboardPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -169,6 +170,17 @@ function App() {
                     <Layout>
                       <ProtectedRoute>
                         <SupportPage />
+                      </ProtectedRoute>
+                    </Layout>
+                  }
+                />
+
+                <Route
+                  path="/owner/dashboard"
+                  element={
+                    <Layout>
+                      <ProtectedRoute>
+                        <OwnerDashboardPage />
                       </ProtectedRoute>
                     </Layout>
                   }

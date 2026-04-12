@@ -8,7 +8,6 @@ class ReservationSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = [
             'user', 
-            'status', 
             'created_at', 
             'updated_at', 
             'cancelled_at', 

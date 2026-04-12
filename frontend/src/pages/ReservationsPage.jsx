@@ -9,7 +9,7 @@ import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Loading from '../components/common/Loading';
 import EmptyState from '../components/common/EmptyState';
-import { Calendar, X, Utensils, Users, MapPin } from 'lucide-react';
+import { Calendar, X, Utensils, Users, MapPin, ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ReservationsPage = () => {
@@ -101,6 +101,20 @@ const ReservationsPage = () => {
     reset();
     setAvailableTables([]);
     setSelectedTable(null);
+  };
+
+
+  const handleOrderFromReservation = (reservation) => {
+    localStorage.setItem('active_reservation_order', JSON.stringify({
+      id: reservation.id,
+      restaurant: reservation.restaurant,
+      reservation_date: reservation.reservation_date,
+      reservation_time: reservation.reservation_time,
+      table: reservation.table,
+      guests_count: reservation.guests_count,
+    }));
+    toast.success('Reservation attached to your next order');
+    window.location.href = '/cart';
   };
 
   const handleCancelReservation = async (reservationId) => {
@@ -260,11 +274,23 @@ const ReservationsPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {reservations.map((reservation) => (
-              <ReservationCard
-                key={reservation.id}
-                reservation={reservation}
-                onCancel={handleCancelReservation}
-              />
+              <div key={reservation.id} className="space-y-4">
+                <ReservationCard
+                  reservation={reservation}
+                  onCancel={handleCancelReservation}
+                />
+                {['PENDING', 'CONFIRMED', 'SEATED'].includes(reservation.status) ? (
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={() => handleOrderFromReservation(reservation)}
+                    className="py-4"
+                  >
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                    Order for this booking
+                  </Button>
+                ) : null}
+              </div>
             ))}
           </div>
         )}

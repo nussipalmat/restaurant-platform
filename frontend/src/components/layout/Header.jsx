@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Bell, User, Menu, LogOut, Settings, Tag } from 'lucide-react';
+import { Search, ShoppingCart, Bell, User, Menu, LogOut, Settings, Tag, Store } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
@@ -120,6 +120,7 @@ const Header = ({ onMenuClick }) => {
                 {showUserMenu && (
                   <div className="absolute right-0 mt-3 w-56 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-0 overflow-hidden">
                     {[
+                      ...(user?.role === 'RESTAURANT_OWNER' ? [{ to: '/owner/dashboard', icon: Store, label: 'Owner Dashboard' }] : []),
                       { to: '/profile', icon: User, label: 'Profile' },
                       { to: '/orders', icon: ShoppingCart, label: 'My Orders' },
                       { to: '/addresses', icon: Settings, label: 'Addresses' },

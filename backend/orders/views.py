@@ -8,29 +8,44 @@ from rest_framework.permissions import IsAuthenticated
 from orders.models import Order
 from orders.serializers.order_serializers import OrderSerializer
 from promotions.models import Promotion
+from reservations.models import Reservation
 
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         user = self.request.user
         if not user.is_authenticated:
             return Order.objects.none()
-        
+
+        queryset = Order.objects.select_related('restaurant', 'reservation')
+        restaurant_id = self.request.query_params.get('restaurant')
+        if restaurant_id:
+            queryset = queryset.filter(restaurant_id=restaurant_id)
+
         if user.role == 'CUSTOMER':
-            return Order.objects.filter(user=user)
+            return queryset.filter(user=user)
         elif user.role == 'RESTAURANT_OWNER':
-            return Order.objects.filter(restaurant__owner=user)
+            return queryset.filter(restaurant__owner=user)
         elif user.role == 'ADMIN':
-            return Order.objects.all()
+            return queryset
         return Order.objects.none()
 
     def perform_create(self, serializer):
         validated_data = serializer.validated_data
         promo_code_value = validated_data.get('promo_code')
+        reservation = validated_data.get('reservation')
+
+        if reservation:
+            if reservation.user_id != self.request.user.id:
+                raise ValidationError({'reservation': 'You can link only your own reservation.'})
+            if reservation.restaurant_id != validated_data.get('restaurant').id:
+                raise ValidationError({'reservation': 'Reservation restaurant must match the order restaurant.'})
+            if reservation.status not in ['PENDING', 'CONFIRMED', 'SEATED']:
+                raise ValidationError({'reservation': 'Only active reservations can be linked to an order.'})
 
         if promo_code_value and isinstance(promo_code_value, str):
             try:

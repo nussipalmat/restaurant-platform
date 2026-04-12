@@ -16,6 +16,11 @@ export const ordersAPI = {
     return response.data;
   },
 
+  update: async (orderId, payload) => {
+    const response = await apiClient.patch(`/orders/${orderId}/`, payload);
+    return response.data;
+  },
+
   cancel: async (orderId) => {
     const response = await apiClient.post(`/orders/${orderId}/cancel/`);
     return response.data;

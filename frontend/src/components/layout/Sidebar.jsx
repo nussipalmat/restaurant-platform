@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { X, Home, ShoppingCart, Calendar, User, Bell, Settings, HelpCircle, ArrowRight } from 'lucide-react';
+import { X, Home, ShoppingCart, Calendar, User, Bell, Settings, HelpCircle, ArrowRight, Store } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -7,6 +7,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { icon: Home, label: 'Home', path: '/', public: true },
+    ...(user?.role === 'RESTAURANT_OWNER' ? [{ icon: Store, label: 'Owner Dashboard', path: '/owner/dashboard', public: false }] : []),
     { icon: ShoppingCart, label: 'Cart', path: '/cart', public: false },
     { icon: ShoppingCart, label: 'Orders', path: '/orders', public: false },
     { icon: Calendar, label: 'Reservations', path: '/reservations', public: false },

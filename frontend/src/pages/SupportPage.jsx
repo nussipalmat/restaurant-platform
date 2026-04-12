@@ -8,10 +8,12 @@ import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Loading from '../components/common/Loading';
 import EmptyState from '../components/common/EmptyState';
-import { HelpCircle, Plus, X, ChevronUp, MessageSquare, Tag } from 'lucide-react';
+import { HelpCircle, Plus, X, ChevronUp, MessageSquare, Tag, Send } from 'lucide-react';
 import { TICKET_CATEGORIES } from '../utils/constants';
 import { formatDateTime } from '../utils/formatters';
 import toast from 'react-hot-toast';
+
+const TELEGRAM_SUPPORT_URL = 'https://t.me/username77772';
 
 const SupportPage = () => {
   const [showNewTicketForm, setShowNewTicketForm] = useState(false);
@@ -76,6 +78,16 @@ const SupportPage = () => {
             </h1>
             <p className="mt-4 text-lg font-bold text-gray-600 uppercase italic">We're here to fix what's broken.</p>
           </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <a
+              href={TELEGRAM_SUPPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 h-16 bg-blue-400 border-4 border-black text-sm font-black uppercase shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+            >
+              <Send className="h-4 w-4" strokeWidth={3} />
+              Telegram support
+            </a>
           <Button 
             onClick={() => setShowNewTicketForm(!showNewTicketForm)}
             className={`h-16 px-8 text-xl font-black uppercase border-4 border-black transition-all ${
@@ -87,6 +99,7 @@ const SupportPage = () => {
             {showNewTicketForm ? <X className="mr-2" strokeWidth={3} /> : <Plus className="mr-2" strokeWidth={3} />}
             {showNewTicketForm ? 'Close Form' : 'Open Ticket'}
           </Button>
+          </div>
         </div>
 
         {/* New Ticket Form - Brutalist Modal Style */}

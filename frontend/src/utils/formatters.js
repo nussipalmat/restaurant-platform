@@ -24,15 +24,15 @@ export const formatRelativeTime = (date) => {
   return formatDistanceToNow(dateObj, { addSuffix: true });
 };
 
-export const formatCurrency = (amount, currency = 'USD') => {
+export const formatCurrency = (amount, currency = 'KZT') => {
   if (amount === null || amount === undefined) return '';
   
-  const dollars = amount;
+  const tenge = amount;
   
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,
-  }).format(dollars);
+  }).format(tenge);
 };
 
 export const formatPhoneNumber = (phoneNumber) => {

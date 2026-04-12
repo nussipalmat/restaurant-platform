@@ -50,6 +50,7 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
     
     promo_code = models.ForeignKey('promotions.Promotion', on_delete=models.SET_NULL, null=True, blank=True)
+    reservation = models.ForeignKey('reservations.Reservation', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     
     estimated_delivery_time = models.DateTimeField(null=True, blank=True)
     delivered_at = models.DateTimeField(null=True, blank=True)
@@ -100,4 +101,3 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.subtotal = self.unit_price * self.quantity
         super().save(*args, **kwargs)
-
